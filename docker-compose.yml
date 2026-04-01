@@ -1,0 +1,27 @@
+services:
+  web:
+    build: .
+    ports:
+      - "10019:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - n0mcode-net
+
+  db:
+    image: mysql:5.7
+    platform: linux/x86_64
+    command: --sql-mode=""
+    environment:
+      MYSQL_DATABASE: n0mcode
+      MYSQL_ROOT_PASSWORD: n0mcode
+    ports:
+      - "10020:3306"
+    volumes:
+      - ./n0mcode.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - n0mcode-net
+
+networks:
+  n0mcode-net:
+    driver: bridge
