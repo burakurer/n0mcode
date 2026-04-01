@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 ob_start();
 session_start();
 $k = $_SESSION['user_name'];
@@ -6,7 +7,8 @@ if (isset($k)) { ?>
 	<!DOCTYPE html>
 	<html>
 	<head>
-		<title>n0mCode</title>
+    <link rel="icon" type="image/png" href="theme/theme-assets/images/ico/n0m.ico"/>
+		<title>n0mCode - logout</title>
 		<style>
 			@import url("https://fonts.googleapis.com/css?family=Raleway:200");
 
@@ -81,7 +83,7 @@ if (isset($k)) { ?>
 			echo $_SESSION['user_name'];
 			session_destroy();
 			?>
-			<meta http-equiv="refresh" content="3;login">
+			<meta http-equiv="refresh" content="1;login?x=logout">
 		</div>
 	</body>
 	</html>

@@ -1,9 +1,10 @@
 <?php
-require_once 'xo/functions.php';
-dbConnect();
+error_reporting(0);
+require_once 'n0mGuard.php';
+loginControl();
 ?>
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading" lang="tr" data-textdirection="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -73,7 +74,7 @@ dbConnect();
     <!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
-    <?php include 'left-panelq.php' ?>
+    <?php include 'includes/left-panelq.php' ?>
 
 
     <!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -99,60 +100,65 @@ dbConnect();
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="card">
-                                                    <p class="card-text">Use <code class="highlighter-rouge">.table-striped</code> to
-                                                        add zebra-striping to any table row within the <code class="highlighter-rouge">&lt;tbody&gt;</code>. This styling doesn't work in
-                                                        IE8 and below as <code>:nth-child</code> CSS selector isn't supported.</p>
-                                                    </div>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th scope="col">Başlık</th>
-                                                                    <th scope="col">Kod</th>
-                                                                    <th scope="col">Tarih</th>
-                                                                    <th scope="col" style="text-align: center">İşlem</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-                                                                require_once 'xo/functions.php';
-                                                                dbConnect();
-                                                                $code=$db->prepare("SELECT * FROM `code` ORDER BY `code`.`code_id` DESC");
-                                                                $code->execute();
-                                                                $say=0;
-                                                                while ($listele=$code->fetch(PDO::FETCH_ASSOC)) { $say++; 
-                                                                    if ($listele['code_sahip'] == $_SESSION['user_name']) {
-                                                                        ?>
-                                                                        <tr>
-                                                                            <th style="vertical-align: middle;"><?php echo $listele['code_baslik']; ?></th>
-                                                                            <td style="vertical-align: middle;"><?php echo mb_substr($listele['code_icerik'],0,300); ?></td>
-                                                                            <td style="vertical-align: middle;"><?php echo $listele['code_tarih']; ?></td>
-                                                                            <td style="vertical-align: middle;">
-                                                                                <center>
-                                                                                    <div class="btn-group">
-                                                                                        <button type="button" class="btn btn-round btn-outline-primary btn-min-width dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ft-wrench"></i> İşlemler</button>
-                                                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                                                            <form method="POST" action="code-ex">
-                                                                                                <input type="text" name="id" hidden="" value="<?php echo $listele['code_id']; ?>">
-                                                                                                <button class="dropdown-item" name="code_ex" type="submit" ><i class="ft-eye"></i> İncele</button>
-                                                                                            </form>
-                                                                                            <form method="POST" action="code-update">
-                                                                                                <input type="text" name="id" hidden=""value="<?php echo $listele['code_id']; ?>">
-                                                                                                <button class="dropdown-item" name="code_update" type="submit"><i class="ft-edit"></i> Düzenle</button>
-                                                                                            </form>
-                                                                                            <form method="POST" action="xo/functions.php">
-                                                                                                <input type="text" name="id" hidden=""value="<?php echo $listele['code_id']; ?>">
-                                                                                                <button class="dropdown-item" name="kod_sil" type="submit"><i class="ft-trash-2"></i> Sil</button>
-                                                                                            </form>
-                                                                                        </div>
+                                                    <p class="card-text">Sisteme eklediğiniz kodların listesi. Eğer kodlarınızın bazıları gözükmüyorsa veya görüntülemede sıkıntı yaşıyorsanız lütfen yöneticiye bildiriniz.</p>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Oscode</th>
+                                                                <th scope="col">Başlık</th>
+                                                                <th scope="col">Kod</th>
+                                                                <th scope="col">Tarih</th>
+                                                                <th scope="col" style="text-align: center">İşlem</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            require_once 'n0mGuard.php';
+                                                            n0mDB_Connect();
+                                                            $code=$db->prepare("SELECT * FROM `code` ORDER BY `code`.`code_id` DESC");
+                                                            $code->execute();
+                                                            $say=0;
+                                                            while ($listele=$code->fetch(PDO::FETCH_ASSOC)) { $say++; 
+                                                                if ($listele['code_sahip'] == $_SESSION['user_name']) {
+                                                                    ?>
+                                                                    <tr>
+                                                                        <td style="vertical-align: middle;text-align: center;">
+                                                                            <?php if($listele['code_public'] == 1){ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-check-circle"></i></div>
+                                                                            <?php }else{ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-x-circle"></i></div>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                        <td style="vertical-align: middle;"><?php echo $listele['code_baslik']; ?></td>
+                                                                        <td style="vertical-align: middle;"><?php echo mb_substr($listele['code_icerik'],0,300); ?></td>
+                                                                        <td style="vertical-align: middle;"><?php echo $listele['code_tarih']; ?></td>
+                                                                        <td style="vertical-align: middle;">
+                                                                            <center>
+                                                                                <div class="btn-group">
+                                                                                    <button type="button" class="btn btn-round btn-outline-primary btn-min-width dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ft-wrench"></i> İşlemler</button>
+                                                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                                        <form method="POST" action="code-ex">
+                                                                                            <input type="text" name="id" hidden="" value="<?php echo $listele['code_id']; ?>">
+                                                                                            <button class="dropdown-item" name="code_ex" type="submit" ><i class="ft-eye"></i> İncele</button>
+                                                                                        </form>
+                                                                                        <form method="POST" action="code-update">
+                                                                                            <input type="text" name="id" hidden=""value="<?php echo $listele['code_id']; ?>">
+                                                                                            <button class="dropdown-item" name="code_update" type="submit"><i class="ft-edit"></i> Düzenle</button>
+                                                                                        </form>
+                                                                                        <form method="POST" action="n0mGuard.php">
+                                                                                            <input type="text" name="id" hidden=""value="<?php echo $listele['code_id']; ?>">
+                                                                                            <button class="dropdown-item" name="kod_sil" type="submit"><i class="ft-trash-2"></i> Sil</button>
+                                                                                        </form>
                                                                                     </div>
-                                                                                </center>
-                                                                            </td>
-                                                                        </tr>
-                                                                    <?php }} ?>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                                                </div>
+                                                                            </center>
+                                                                        </td>
+                                                                    </tr>
+                                                                <?php }} ?>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -160,27 +166,43 @@ dbConnect();
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card" style="border-radius: 10px">
+                                    <img src="../theme/dox/images/ad/ad.jpg" style="border-radius: 10px">
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-12">
+                                <div class="card" style="border-radius: 10px">
+                                    <img src="../theme/dox/images/ad/ad1.jpg" style="border-radius: 10px">
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-12">
+                                <div class="card" style="border-radius: 10px">
+                                    <img src="../theme/dox/images/ad/ip.gif" style="border-radius: 10px">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
 
-            <!-- ////////////////////////////////////////////////////////////////////////////-->
+        <!-- ////////////////////////////////////////////////////////////////////////////-->
 
-            <?php include 'footer.php'; ?>
+        <?php include 'includes/footer.php'; ?>
 
-            <!-- BEGIN VENDOR JS-->
-            <script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
-            <!-- BEGIN VENDOR JS-->
-            <!-- BEGIN PAGE VENDOR JS-->
-            <!-- END PAGE VENDOR JS-->
-            <!-- BEGIN CHAMELEON  JS-->
-            <script src="../theme/theme-assets/js/core/app-menu-lite.js" type="text/javascript"></script>
-            <script src="../theme/theme-assets/js/core/app-lite.js" type="text/javascript"></script>
-            <!-- END CHAMELEON  JS-->
-            <!-- BEGIN PAGE LEVEL JS-->
-            <!-- END PAGE LEVEL JS-->
-        </body>
+        <!-- BEGIN VENDOR JS-->
+        <script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
+        <!-- BEGIN VENDOR JS-->
+        <!-- BEGIN PAGE VENDOR JS-->
+        <!-- END PAGE VENDOR JS-->
+        <!-- BEGIN CHAMELEON  JS-->
+        <script src="../theme/theme-assets/js/core/app-menu-lite.js" type="text/javascript"></script>
+        <script src="../theme/theme-assets/js/core/app-lite.js" type="text/javascript"></script>
+        <!-- END CHAMELEON  JS-->
+        <!-- BEGIN PAGE LEVEL JS-->
+        <!-- END PAGE LEVEL JS-->
+    </body>
 
-        </html>
+    </html>

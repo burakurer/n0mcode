@@ -1,6 +1,10 @@
-
+<?php
+error_reporting(0);
+require_once 'n0mGuard.php';
+loginControl();
+?>
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading" lang="tr" data-textdirection="ltr">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -70,7 +74,7 @@
 	<!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
-	<?php include 'left-panelq.php' ?>
+	<?php include 'includes/left-panelq.php' ?>
 
 
 	<!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -89,9 +93,9 @@
 					<div class="col-xl-12 col-lg-12">
 						<div class="card">
 							<?php
-							require_once 'xo/functions.php';
-							dbConnect();
-							if (isset($_POST['user_update'])){
+							require_once 'n0mGuard.php';
+							n0mDB_Connect();
+							if (isset($_POST['user_updatex'])){
 								$sorgu = $_SESSION['user_name'];
 								$usercek = $db->query("SELECT * FROM user WHERE user_name = '$sorgu'")->fetch(PDO::FETCH_ASSOC);
 								if ($usercek) {
@@ -100,25 +104,25 @@
 											<div class="card-body">
 												<h3 class="card-title">Hesap ayarlarını güncelleme</h3>
 												<div class="form-body">
-													<form method="POST" action="xo/functions.php">
+													<form method="POST" action="n0mGuard.php">
 														<div class="form-group">
-															<input type="text" name="user_id" hidden="" value="<?php echo $vericek['user_id']; ?>">
+															<input type="text" name="user_secret" hidden="" value="<?php echo $vericek['user_secret']; ?>">
 															<h5>Resim</h5>
 															<?php if(!empty($vericek['user_picture'])){ ?>
-																<img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="<?php echo $vericek['user_picture']; ?>">
+																<img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="<?php echo htmlspecialchars($vericek['user_picture']); ?>">
 															<?php }
 															else{ ?>
 																<img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="http://localhost/dox/n0mcode/theme/dox/images/usernone.png">
 															<?php }?>
-															<input type="url" class="form-control" name="user_picture" value="<?php echo htmlspecialchars($vericek['user_picture']) ?>">
+															<input type="url" class="form-control" name="user_picture" value="<?php echo htmlspecialchars($vericek['user_picture']); ?>">
 														</div>
 														<div class="form-group">
 															<h5>Kullanıcı adı</h5>
-															<input type="text" class="form-control" readonly="readonly" name="user_name" value="<?php echo htmlspecialchars($vericek['user_name']) ?>">
+															<input type="text" class="form-control" readonly="readonly" name="user_name" value="<?php echo htmlspecialchars($vericek['user_name']); ?>">
 														</div>
 														<div class="form-group">
 															<h5>Mail adresi</h5>
-															<input type="email" class="form-control" name="user_mail" value="<?php echo $vericek['user_mail'] ?>">
+															<input type="email" class="form-control" name="user_mail" value="<?php echo htmlspecialchars($vericek['user_mail']); ?>">
 														</div>
 														<div class="form-group">
 															<h5>Kayıt tarihi</h5>
@@ -131,7 +135,7 @@
 													</div>
 													<div class="form-actions">
 														<center>
-															<button type="submit" name="user_guncelle" class="btn btn-round btn-outline-success"><i class="ft-save"></i> Kaydet</button>
+															<button type="submit" name="user_update" class="btn btn-round btn-outline-success"><i class="ft-save"></i> Kaydet</button>
 														</form>
 														<a href="my-account">
 															<button class="btn btn-round btn-outline-danger"><i class="ft-trash-2"></i> İptal Et</button>
@@ -149,6 +153,21 @@
 									} ?>
 								</div>
 							</div>
+							<div class="col-xl-12 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ad.jpg" style="border-radius: 10px">
+								</div>
+							</div>
+							<div class="col-xl-6 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ad1.jpg" style="border-radius: 10px">
+								</div>
+							</div>
+							<div class="col-xl-6 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ip.gif" style="border-radius: 10px">
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -156,7 +175,7 @@
 
 			<!-- ////////////////////////////////////////////////////////////////////////////-->
 
-			<?php include 'footer.php'; ?>
+			<?php include 'includes/footer.php'; ?>
 
 			<!-- BEGIN VENDOR JS-->
 			<script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'r00t/xo/functions.php';
+require_once 'root/n0mSystem/n0mGuard.php';
 secureLogin();
 
 ?>

@@ -1,9 +1,10 @@
 <?php
-require_once 'xo/functions.php';
-dbConnect();
+error_reporting(0);
+require_once 'n0mGuard.php';
+loginControl();
 ?>
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading" lang="tr" data-textdirection="ltr">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -37,7 +38,7 @@ dbConnect();
 	<!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
-	<?php include 'left-panelq.php' ?>
+	<?php include 'includes/left-panelq.php' ?>
 
 
 	<!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -56,8 +57,8 @@ dbConnect();
 					<div class="col-xl-12 col-lg-12">
 						<div class="card">
 							<?php
-							require_once 'xo/functions.php';
-							dbConnect();
+							require_once 'n0mGuard.php';
+							n0mDB_Connect();
 							if (isset($_POST['code_ex'])){
 								$id = $_POST['id']; 
 								$kontrol = $db->query("SELECT * FROM code WHERE code_id = '$id'")->fetch(PDO::FETCH_ASSOC);
@@ -103,11 +104,20 @@ dbConnect();
 									header('Location:oscode');
 								} ?>
 							</div>
-							<div>
-								<center>
-									<a target="_blank" href="https://rxcgamestudio.cf?mami.wtf"><img src="../theme/dox/images/rx.gif" style="border-radius: 20px; width: auto;"></a>
-									<img src="../theme/dox/images/raad.gif" style="border-radius: 20px; width: auto; margin-top: 15px">
-								</center>
+							<div class="col-xl-12 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ad.jpg" style="border-radius: 10px">
+								</div>
+							</div>
+							<div class="col-xl-6 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ad1.jpg" style="border-radius: 10px">
+								</div>
+							</div>
+							<div class="col-xl-6 col-lg-12">
+								<div class="card" style="border-radius: 10px">
+									<img src="../theme/dox/images/ad/ip.gif" style="border-radius: 10px">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -118,7 +128,7 @@ dbConnect();
 
 		<!-- ////////////////////////////////////////////////////////////////////////////-->
 
-		<?php include 'footer.php'; ?>
+		<?php include 'includes/footer.php'; ?>
 
 		<!-- BEGIN VENDOR JS-->
 		<script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>

@@ -1,6 +1,10 @@
-
+<?php
+error_reporting(0);
+require_once 'n0mGuard.php';
+loginControl();
+?>
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading" lang="tr" data-textdirection="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -70,7 +74,7 @@
     <!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
-    <?php include 'left-panelq.php' ?>
+    <?php include 'includes/left-panelq.php' ?>
 
 
     <!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -87,8 +91,8 @@
             <div class="content-body">
                 <div class="row match-height">
                     <?php
-                    require_once 'xo/functions.php';
-                    dbConnect();
+                    require_once 'n0mGuard.php';
+                    n0mDB_Connect();
                     $user_name = $_SESSION['user_name']; 
                     $vericek = $db->query("SELECT * FROM user WHERE user_name = '$user_name'")->fetch(PDO::FETCH_ASSOC);
                     if ( $vericek ){ ?>
@@ -100,9 +104,10 @@
                                             <h2 style="text-align: center;">Hesap Özetin</h2>
                                             <form method="POST" action="my-account-update">
                                                 <div class="form-group">
+                                                    <input type="text" name="user_id" hidden="" value="<?php echo $vericek['user_id']; ?>">
                                                     <center>
                                                         <?php if(!empty($vericek['user_picture'])){ ?>
-                                                            <img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="<?php echo $vericek['user_picture']; ?>">
+                                                            <img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="<?php echo htmlspecialchars($vericek['user_picture']); ?>">
                                                         <?php }
                                                         else{ ?>
                                                             <img style="height: 200px; width: 200px; border-radius: 50%;margin-bottom: 10px; border: 2px solid purple" src="http://localhost/dox/n0mcode/theme/dox/images/usernone.png">
@@ -127,13 +132,13 @@
                                                 <div class="form-group">
                                                     <fieldset class="form-group">
                                                         <i class="ft-clipboard"></i> Notlarım
-                                                        <textarea class="form-control" id="helpInputTop" name="user_notes" id="icerik" rows="10"><?php echo htmlspecialchars($vericek['user_notes'])  ?></textarea>
+                                                        <textarea class="form-control" id="helpInputTop" name="user_notes" id="icerik" rows="10" readonly="readonly"><?php echo htmlspecialchars($vericek['user_notes'])  ?></textarea>
                                                     </fieldset>
                                                 </div>
                                             </div>
                                             <div class="form-actions">
                                                 <center>
-                                                    <button type="submit" name="user_update" class="btn btn-round  btn-outline-warning"><i class="ft-edit"></i> Düzenle</button>
+                                                    <button type="submit" name="user_updatex" class="btn btn-round  btn-outline-warning"><i class="ft-edit"></i> Düzenle</button>
                                                 </form>
                                             </center>
                                         </div>
@@ -147,28 +152,43 @@
                                     <div class="card-header">
                                         <h2 style="text-align: center;"><i class="ft-lock"></i> Hesap güvenliği</h2>
                                     </div>
-                                    <form method="POST" action="xo/functions.php">
+                                    <form method="POST" action="n0mGuard.php">
                                         <div class="card-body">
+                                            <input type="text" name="user_secret" hidden="" value="<?php echo $vericek['user_secret']; ?>">
                                             <h5>Şifremi değiştir</h5>
                                             <fieldset class="form-group">
                                                 Geçerli şifreniz
-                                                <input type="password" class="form-control" name="old_pass" required="required" disabled="">
+                                                <input type="password" class="form-control" name="old_pass" required="required">
                                             </fieldset>
                                             <fieldset class="form-group">
                                                 Yeni şifreniz
-                                                <input type="password" class="form-control" name="new_pass" required="required" disabled="">
+                                                <input type="password" class="form-control" name="new_pass" required="required">
                                             </fieldset>
                                             <fieldset class="form-group">
                                                 Yeni şifrenizi tekrar giriniz
-                                                <input type="password" class="form-control" name="new_passc" required="required" disabled="">
+                                                <input type="password" class="form-control" name="new_passc" required="required">
                                             </fieldset>
-
                                             <center>
-                                                <button type="submit" name="pass_update" disabled="" class="btn btn-round btn-outline-danger btn-min-width mr-1 mb-1"><i class="ft-lock"></i> Şifremi değiştir</button>
+                                                <button type="submit" name="pass_update" class="btn btn-round btn-outline-danger btn-min-width mr-1 mb-1"><i class="ft-lock"></i> Şifremi değiştir</button>
                                             </center>
                                         </div>
                                     </form>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12">
+                            <div class="card" style="border-radius: 10px">
+                                <img src="../theme/dox/images/ad/ad.jpg" style="border-radius: 10px">
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-12">
+                            <div class="card" style="border-radius: 10px">
+                                <img src="../theme/dox/images/ad/ad1.jpg" style="border-radius: 10px">
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-12">
+                            <div class="card" style="border-radius: 10px">
+                                <img src="../theme/dox/images/ad/ip.gif" style="border-radius: 10px">
                             </div>
                         </div>
                     </div>
@@ -183,7 +203,7 @@
 
     <!-- ////////////////////////////////////////////////////////////////////////////-->
 
-    <?php include 'footer.php'; ?>
+    <?php include 'includes/footer.php'; ?>
 
     <!-- BEGIN VENDOR JS-->
     <script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>

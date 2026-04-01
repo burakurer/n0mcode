@@ -1,9 +1,10 @@
 <?php
-require_once 'xo/functions.php';
-dbConnect();
+error_reporting(0);
+require_once 'n0mGuard.php';
+loginControl();
 ?>
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading" lang="tr" data-textdirection="ltr">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -72,7 +73,7 @@ dbConnect();
     <!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
-    <?php include 'left-panelq.php' ?>
+    <?php include 'includes/left-panelq.php' ?>
 
 
     <!-- ////////////////////////////////////////////////////////////////////////////-->
@@ -91,50 +92,65 @@ dbConnect();
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Son eklediğim kodlar</h4>
+                                <h4 class="card-title">Son hesap etkinlikleri</h4>
                             </div>
                             <div class="card-content collapse show">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="card">
-                                                <p class="card-text">Use <code class="highlighter-rouge">.table-striped</code> to
-                                                    add zebra-striping to any table row within the <code class="highlighter-rouge">&lt;tbody&gt;</code>. This styling doesn't work in
-                                                    IE8 and below as <code>:nth-child</code> CSS selector isn't supported.</p>
-                                                </div>
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col">Başlık</th>
-                                                                <th scope="col">Kod</th>
-                                                                <th scope="col">Tarih</th>
-                                                                <th scope="col" style="text-align: center">İşlem</th>
-                                                            </tr>
-                                                        </thead>
-                                                            <tbody>
-                                                            <?php
-                                                            $code=$db->prepare("SELECT * FROM `code` ORDER BY `code`.`code_id` DESC LIMIT 4");
-                                                            $code->execute();
-                                                            $say=0;
-                                                            while ($listele=$code->fetch(PDO::FETCH_ASSOC)) { $say++; 
-                                                                if ($listele['code_sahip'] == $_SESSION['user_name']) {
-                                                                    ?>
+                                                <p class="card-text">Son 4 hesap etkinliğiniz. Şüpheli bir giriş var ise <a href="my-account">şifrenizi değiştirebilirsiniz</a></p>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Giriş Durumu</th>
+                                                            <th scope="col">Hcaptcha</th>
+                                                            <th scope="col">İp adresi</th>
+                                                            <th scope="col">Tarayıcı</th>
+                                                            <th scope="col">Tarih</th>
+                                                            <th scope="col">İşlemler</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        n0mLogDB_Connect();
+                                                        $log=$db->prepare("SELECT * FROM `n0mlog` ORDER BY `n0mlog`.`log_id` DESC");
+                                                        $log->execute();
+                                                        $say=0;
+                                                        while ($listele=$log->fetch(PDO::FETCH_ASSOC)) {
+                                                            if ($listele['log_uname'] == $_SESSION['user_name']) {
+                                                                $say++;
+                                                                if ($say <= 4) { ?>
                                                                     <tr>
-                                                                        <th style="vertical-align: middle;"><?php echo htmlspecialchars($listele['code_baslik']); ?></th>
-                                                                        <td style="vertical-align: middle;"><?php echo htmlspecialchars(mb_substr($listele['code_icerik'],0,100)); ?></td>
-                                                                        <td style="vertical-align: middle;"><?php echo $listele['code_tarih']; ?></td>
+                                                                        <td style="vertical-align: middle;">
+                                                                            <?php if($listele['log_status'] == 1){ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-check-circle"></i></div>
+                                                                            <?php }else{ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-x-circle"></i></div>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                        <td style="vertical-align: middle;">
+                                                                            <?php if($listele['log_hcaptcha'] == 1){ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-check-circle"></i></div>
+                                                                            <?php }else{ ?>
+                                                                                <div style="font-size: 30px"><i class="ft-x-circle"></i></div>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                        <td style="vertical-align: middle;"><?php echo $listele['log_ip']; ?></td>
+                                                                        <td style="vertical-align: middle;"><?php echo $listele['log_web']; ?></td>
+                                                                        <td style="vertical-align: middle;"><?php echo $listele['log_time']; ?></td>
                                                                         <td style="vertical-align: middle;">
                                                                             <center>
-                                                                                <form method="POST" action="code-ex">
-                                                                                    <input type="text" name="id" hidden="" value="<?php echo $listele['code_id']; ?>">
-                                                                                    <button type="submit" class="btn btn-round btn-outline-info btn-min-width" name="code_ex"><i class="ft-info"></i> İncele</button>
+                                                                                <form method="POST" target="_blank" action="https://mami.wtf/ip/sorgu">
+                                                                                    <input type="text" name="ip" hidden="" value="<?php echo $listele['log_ip']; ?>">
+                                                                                    <button type="submit" class="btn btn-round btn-outline-info btn-min-width" name="sorgula" type="submit"><i class="ft-search"></i> İp sorgula</button>
                                                                                 </form>
                                                                             </center>
                                                                         </td>
                                                                     </tr>
-                                                                <?php }}
-                                                                ?>
+                                                                <?php }}} ?>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -144,27 +160,98 @@ dbConnect();
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-12 col-lg-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Son eklediğim kodlar</h4>
+                                    </div>
+                                    <div class="card-content collapse show">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="card">
+                                                        <p class="card-text">n0mCode'a hoşgeldiniz, burada son eklediğiniz son 4 kodu görebilirsiniz.</p>
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Başlık</th>
+                                                                    <th scope="col">Kod</th>
+                                                                    <th scope="col">Tarih</th>
+                                                                    <th scope="col" style="text-align: center">İşlem</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php
+                                                                n0mDB_Connect();
+                                                                $code=$db->prepare("SELECT * FROM `code` ORDER BY `code`.`code_id` DESC");
+                                                                $code->execute();
+                                                                $say=0;
+                                                                while ($listele=$code->fetch(PDO::FETCH_ASSOC)) {; 
+                                                                    if ($listele['code_sahip'] == $_SESSION['user_name']) {
+                                                                        if ($say <= 4) {
+                                                                            ?>
+                                                                            <tr>
+                                                                                <th style="vertical-align: middle;"><?php echo htmlspecialchars($listele['code_baslik']); ?></th>
+                                                                                <td style="vertical-align: middle;"><?php echo htmlspecialchars(mb_substr($listele['code_icerik'],0,100)); ?></td>
+                                                                                <td style="vertical-align: middle;"><?php echo $listele['code_tarih']; ?></td>
+                                                                                <td style="vertical-align: middle;">
+                                                                                    <center>
+                                                                                        <form method="POST" action="code-ex">
+                                                                                            <input type="text" name="id" hidden="" value="<?php echo $listele['code_id']; ?>">
+                                                                                            <button type="submit" class="btn btn-round btn-outline-info btn-min-width" name="code_ex"><i class="ft-info"></i> İncele</button>
+                                                                                        </form>
+                                                                                    </center>
+                                                                                </td>
+                                                                            </tr>
+                                                                        <?php }}}
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-12 col-lg-12">
+                                        <div class="card" style="border-radius: 10px">
+                                            <img src="../theme/dox/images/ad/ad.jpg" style="border-radius: 10px">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-12">
+                                        <div class="card" style="border-radius: 10px">
+                                            <img src="../theme/dox/images/ad/ad1.jpg" style="border-radius: 10px">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-12">
+                                        <div class="card" style="border-radius: 10px">
+                                            <img src="../theme/dox/images/ad/ip.gif" style="border-radius: 10px">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
 
-            <!-- ////////////////////////////////////////////////////////////////////////////-->
+                    <!-- ////////////////////////////////////////////////////////////////////////////-->
 
-            <?php include 'footer.php'; ?>
+                    <?php include 'includes/footer.php'; ?>
 
-            <!-- BEGIN VENDOR JS-->
-            <script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
-            <!-- BEGIN VENDOR JS-->
-            <!-- BEGIN PAGE VENDOR JS-->
-            <!-- END PAGE VENDOR JS-->
-            <!-- BEGIN CHAMELEON  JS-->
-            <script src="../theme/theme-assets/js/core/app-menu-lite.js" type="text/javascript"></script>
-            <script src="../theme/theme-assets/js/core/app-lite.js" type="text/javascript"></script>
-            <!-- END CHAMELEON  JS-->
-            <!-- BEGIN PAGE LEVEL JS-->
-            <!-- END PAGE LEVEL JS-->
-        </body>
+                    <!-- BEGIN VENDOR JS-->
+                    <script src="../theme/theme-assets/vendors/js/vendors.min.js" type="text/javascript"></script>
+                    <!-- BEGIN VENDOR JS-->
+                    <!-- BEGIN PAGE VENDOR JS-->
+                    <!-- END PAGE VENDOR JS-->
+                    <!-- BEGIN CHAMELEON  JS-->
+                    <script src="../theme/theme-assets/js/core/app-menu-lite.js" type="text/javascript"></script>
+                    <script src="../theme/theme-assets/js/core/app-lite.js" type="text/javascript"></script>
+                    <!-- END CHAMELEON  JS-->
+                    <!-- BEGIN PAGE LEVEL JS-->
+                    <!-- END PAGE LEVEL JS-->
+                </body>
 
-        </html>
+                </html>
